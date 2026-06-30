@@ -1,0 +1,20 @@
+# Environnement Python
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+
+# Données volumineuses (le corpus source ne doit pas être commité)
+data/raw/*.json
+data/processed/*
+!data/processed/.gitkeep
+
+# Artefacts spaCy / entraînement
+*.spacy
+output/
+configs/config.cfg
+
+# OS
+.DS_Store

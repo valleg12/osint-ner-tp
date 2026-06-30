@@ -1,0 +1,14 @@
+# --- Pipeline NER (étapes 1 à 4) ---
+spacy>=3.7,<3.9
+click>=8.1            # requis par la CLI spaCy (parfois absent de la résolution)
+typer>=0.9
+# Modèle de base anglais (transfer learning) — installé séparément :
+#   python -m spacy download en_core_web_sm
+
+# --- Étape 2b : pré-annotation par LLM (optionnelle) ---
+anthropic>=0.40        # pré-annotation Claude (clé ANTHROPIC_API_KEY requise)
+python-dotenv>=1.0     # chargement du .env
+
+# --- Étape 5 : ingestion Elasticsearch + dashboards Kibana ---
+elasticsearch>=8.13,<9
+tqdm>=4.66
