@@ -92,19 +92,54 @@ Top entités extraites sur 3 000 articles :
 
 ## 5. Dashboards Kibana
 
-> **À insérer : screenshots des dashboards** une fois le cluster Elastic Cloud
-> déployé (`make step5`). Configuration prévue (mapping : entités en `keyword`,
-> `date` en date) :
+Les 3 000 articles enrichis ont été ingérés dans **Elasticsearch Serverless**
+(index `osint_articles`, mapping : entités en `keyword`, `date` en `date`) puis
+visualisés dans **Kibana (Lens)**. Agrégations `terms` (top 15) pour les entités,
+`date_histogram` pour la chronologie.
 
-1. **Top WEAPON / MIL_UNIT / MIL_ORG** — 3 visualisations *Bar/Lens* en agrégation
-   `terms` sur chaque champ keyword (top 15). *Pourquoi :* identifier d'un coup
-   d'œil le matériel et les acteurs dominants.
-2. **Histogramme temporel** — *date_histogram* sur `date` (intervalle mensuel),
-   éventuellement empilé par label. *Pourquoi :* détecter les pics de mentions et
-   les corréler à des événements.
-3. **Co-occurrences** — table croisée WEAPON × MIL_UNIT (sub-aggregation `terms`).
-   *Pourquoi :* relier un système d'arme à une unité qui l'emploie.
-4. **Filtres par période** + recherche plein-texte sur `text`.
+### Top WEAPON — matériel le plus cité
+
+![Top 15 armes](screenshots/01_top_weapons.png)
+
+Quatre systèmes dominent à parts quasi égales (~450-500 mentions : *missile,
+drones, drone, artillery*), puis décrochage net. La guerre décrite est une
+**guerre de frappes à distance** ; présence de matériel occidental nommé
+(*himars*).
+
+### Top MIL_UNIT — unités combattantes
+
+![Top 15 unités](screenshots/02_top_mil_units.png)
+
+Entités plus rares et plus bruitées. La barre de tête *« the company »* (≈79) est
+le **faux positif** attendu (cf. §3). Les mentions utiles sont des brigades
+typées (*mechanized / territorial defense / national guard brigade*). La grande
+barre de droite est le bucket *« Autre »* (queue de distribution).
+
+### Top MIL_ORG — organisations de haut niveau
+
+![Top 15 organisations](screenshots/03_top_mil_orgs.png)
+
+*Defense Ministry* écrase tout (≈900) : signature d'un corpus **institutionnel**
+fait de communiqués officiels, suivi de *Navy, Russian Armed Forces, NATO,
+Aerospace Forces, Black Sea Fleet*. C'est autant un fait qu'un **marqueur du
+biais de source**.
+
+### Évolution temporelle des mentions
+
+![Histogramme temporel](screenshots/04_timeline.png)
+
+Le sous-corpus analysé (3 000 articles les plus récents) se concentre sur
+**mi-2024 → fin 2025**, avec un **pic mi-2024** puis une décrue en dents de scie.
+À noter : l'échantillon étant les articles les plus récents, cette chronologie ne
+reflète pas toute la profondeur du corpus (2015-2025) mais la période chaude
+récente — pertinent pour une veille de renseignement.
+
+### Choix de dashboards & pistes
+
+Ces 4 visualisations répondent aux 3 questions de renseignement du sujet (quelles
+armes, quelles unités/organisations, quelle évolution). Extensions possibles :
+**co-occurrences** WEAPON × MIL_UNIT (table croisée `terms`), **filtres par
+période**, et recherche plein-texte sur `text`.
 
 ## 6. Note de renseignement (courte)
 
@@ -113,11 +148,13 @@ Top entités extraites sur 3 000 articles :
 La prédominance des communiqués du *defense ministry* confirme un cadrage
 institutionnel à intégrer dans toute interprétation.
 
-**Constats.** Sur la période 2015→2025, le discours de la source est centré sur
-les **frappes à distance** (drones, missiles, artillerie) et relaie nommément
+**Constats.** Sur le sous-corpus analysé (3 000 articles les plus récents,
+concentrés mi-2024 → fin 2025), le discours de la source est centré sur les
+**frappes à distance** (drones, missiles, artillerie) et relaie nommément
 l'armement occidental (HIMARS). Les organisations de haut niveau (ministères,
 états-majors, marine) structurent le récit, tandis que les unités combattantes
-précises sont moins fréquemment nommées.
+précises sont moins fréquemment nommées. Le pic de mi-2024 mériterait un
+recoupement événementiel.
 
 **Limites.** Biais de source ; entités sous-représentées ; faiblesse du NER sur
 les unités (F1 0.79) et faux positifs génériques (« the company »). Les tendances
