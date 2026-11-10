@@ -21,7 +21,12 @@ import spacy
 from spacy.tokens import DocBin
 
 from config import (
-    ANNOTATIONS, BASE_MODEL, CONFIGS, DEV_SPACY, LABELS, TRAIN_SPACY,
+    ANNOTATIONS,
+    BASE_MODEL,
+    CONFIGS,
+    DEV_SPACY,
+    LABELS,
+    TRAIN_SPACY,
 )
 
 SEED = 42

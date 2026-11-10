@@ -13,7 +13,7 @@ import json
 import re
 from datetime import datetime, timezone
 
-from config import RAW_DATASET, CORPUS, DATA_PROC
+from config import CORPUS, DATA_PROC, RAW_DATASET
 
 # Espaces multiples / sauts de ligne parasites
 _WS = re.compile(r"\s+")

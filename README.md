@@ -111,3 +111,24 @@ docs/note_renseignement.md  # note de renseignement (livrable)
 Un PDF contenant : le lien GitHub du code, des screenshots des dashboards, une
 analyse des métriques et des choix de dashboards, et une note de renseignement
 courte (gabarit dans [`docs/note_renseignement.md`](docs/note_renseignement.md)).
+
+## Déploiement — API REST, Docker, CI/CD
+
+Le modèle fine-tuné est servi par une API **FastAPI** (`src/api.py`) :
+
+| Méthode | Route | Rôle |
+| ------- | ----- | ---- |
+| GET | `/health` | disponibilité du service et du modèle |
+| GET | `/metrics` | monitoring : requêtes, erreurs, latence, entités par label |
+| POST | `/extract` | entités WEAPON / MIL_UNIT / MIL_ORG d'un texte |
+| POST | `/extract/batch` | idem pour 1 à 100 textes |
+
+```bash
+pip install -r requirements-api.txt
+make api                                  # = MODEL_PATH=output/model-best uvicorn src.api:app --port 8000
+# documentation interactive : http://localhost:8000/docs
+docker build -t osint-ner-api . && docker run -p 8000:8000 -v "$PWD/output/model-best:/model" osint-ner-api
+```
+
+**CI (GitHub Actions, `.github/workflows/ci.yml`)** : à chaque push, `ruff` (lint) → `pytest` (6 tests du
+contrat de l'API, avec un mini-modèle à règles puisque le modèle entraîné n'est pas versionné) → `docker build`.

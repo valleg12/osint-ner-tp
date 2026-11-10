@@ -1,4 +1,4 @@
-.PHONY: install step1 step2 validate step3 train step4 step5 pipeline clean
+.PHONY: install step1 step2 validate step3 train step4 step5 pipeline clean api test
 
 PY := .venv/bin/python
 SPACY := .venv/bin/python -m spacy
@@ -32,6 +32,12 @@ step4:                  ## Étape 4 — inférence sur le corpus
 
 step5:                  ## Étape 5 — ingestion Elasticsearch
 	cd src && ../$(PY) step5_ingest_es.py --recreate
+
+api:                    ## Étape 6 — sert le modèle via l'API REST (http://localhost:8000/docs)
+	MODEL_PATH=output/model-best $(PY) -m uvicorn src.api:app --port 8000
+
+test:                   ## Lint + tests de l'API
+	$(PY) -m ruff check src tests && $(PY) -m pytest -q
 
 pipeline: step1 step2 validate step3 train step4   ## Tout sauf l'ingestion ES
 

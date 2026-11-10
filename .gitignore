@@ -18,3 +18,4 @@ configs/config.cfg
 
 # OS
 .DS_Store
+.gstack/
